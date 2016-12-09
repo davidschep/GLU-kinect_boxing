@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerManager : MonoBehaviour
 {
 
-    private GameObject[] m_gPlayers;
+    private GameObject[] m_PlayersArray;
 
     private bool m_bPlayerDown;
 

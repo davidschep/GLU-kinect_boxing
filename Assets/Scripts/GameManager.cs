@@ -5,10 +5,10 @@ public class GameManager : MonoBehaviour
 {
 #region classVariables
 
-    private GameObject[] m_gPlayers;
+    private GameObject[] m_Players;
 
-    private Vector3[] m_vPlayerOriginTransform;
-    private Quaternion[] m_qPlayerOriginRotation;
+    private Vector3[] m_PlayerOriginTransform;
+    private Quaternion[] m_PlayerOriginRotation;
 
     private bool m_bRoundOver;
     private float m_fRoundTime;
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     }
     public GameObject[] Players
     {
-        get { return m_gPlayers; }
+        get { return m_Players; }
     }
 
 #endregion
@@ -54,13 +54,13 @@ public class GameManager : MonoBehaviour
     /// <param name="tag"></param>
     private void InitPlayersWithTag(string tag)
     {
-        m_gPlayers = GameObject.FindGameObjectsWithTag(tag);
-        Debug.Log("Players found: " + m_gPlayers.Length);
+        m_Players = GameObject.FindGameObjectsWithTag(tag);
+        Debug.Log("Players found: " + m_Players.Length);
 
-        for (int i = 0; i < m_gPlayers.Length; i++)
+        for (int i = 0; i < m_Players.Length; i++)
         {
-            m_vPlayerOriginTransform[i] = m_gPlayers[i].transform.position;
-            m_qPlayerOriginRotation[i] = m_gPlayers[i].transform.rotation;
+            m_PlayerOriginTransform[i] = m_Players[i].transform.position;
+            m_PlayerOriginRotation[i] = m_Players[i].transform.rotation;
         }
 
     }
@@ -87,15 +87,15 @@ public class GameManager : MonoBehaviour
     {
         if (roundover)
         {
-            for (int i = 0; i < m_gPlayers.Length; i++)
+            for (int i = 0; i < m_Players.Length; i++)
             {
-                m_gPlayers[i].transform.position = m_vPlayerOriginTransform[i];
-                m_gPlayers[i].transform.rotation = m_qPlayerOriginRotation[i];
+                m_Players[i].transform.position = m_PlayerOriginTransform[i];
+                m_Players[i].transform.rotation = m_PlayerOriginRotation[i];
                 //int health = m_gPlayers[i].GetComponent<PlayerManager>().m_iHealth;
                 //health = m_iPlayerHealth;
             }
             //bool playerwon = GetComponent<PlayerManager>().PlayerWon;
-            RoundCounter(playerwon);
+            //RoundCounter(playerwon);
 
         }
     }
