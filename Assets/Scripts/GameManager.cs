@@ -5,27 +5,29 @@ public class GameManager : MonoBehaviour
 {
 #region classVariables
 
-    private GameObject[] m_Players;
+    private GameObject[] m_PlayersArray;
 
     private Vector3[] m_PlayerOriginTransform;
     private Quaternion[] m_PlayerOriginRotation;
 
     private bool m_bRoundOver;
+    private bool m_bRoundStart;
+
     private float m_fRoundTime;
 
-    public int m_iPlayerHealth;
+    private static int m_iPlayerHealth;
     private int m_iRounds;
 
     private int[] m_iPlayerPoints;
     private int[] m_iPlayerWins;
 
-    public int Playerhealth
+    public static int Playerhealth
     {
         get { return m_iPlayerHealth; }
     }
     public GameObject[] Players
     {
-        get { return m_Players; }
+        get { return m_PlayersArray; }
     }
 
 #endregion
@@ -37,10 +39,14 @@ public class GameManager : MonoBehaviour
 
         m_iPlayerHealth = 100;
 
+        InitPlayersWithTag("Player");
+
+        m_iPlayerWins = new int[m_PlayersArray.Length];
         m_iPlayerWins[0] = 0;
         m_iPlayerWins[1] = 0;
 
-        InitPlayersWithTag("Player");
+        StartCoroutine(CountDownTimer(10f));
+
     }
 
     private void Update()
@@ -54,13 +60,16 @@ public class GameManager : MonoBehaviour
     /// <param name="tag"></param>
     private void InitPlayersWithTag(string tag)
     {
-        m_Players = GameObject.FindGameObjectsWithTag(tag);
-        Debug.Log("Players found: " + m_Players.Length);
+        m_PlayersArray = GameObject.FindGameObjectsWithTag(tag);
+        Debug.Log("Players found: " + m_PlayersArray.Length);
 
-        for (int i = 0; i < m_Players.Length; i++)
+        m_PlayerOriginRotation = new Quaternion[m_PlayersArray.Length];
+        m_PlayerOriginTransform = new Vector3[m_PlayersArray.Length];
+
+        for (int i = 0; i < m_PlayersArray.Length; i++)
         {
-            m_PlayerOriginTransform[i] = m_Players[i].transform.position;
-            m_PlayerOriginRotation[i] = m_Players[i].transform.rotation;
+            m_PlayerOriginTransform[i] = m_PlayersArray[i].transform.position;
+            m_PlayerOriginRotation[i] = m_PlayersArray[i].transform.rotation;
         }
 
     }
@@ -87,11 +96,11 @@ public class GameManager : MonoBehaviour
     {
         if (roundover)
         {
-            for (int i = 0; i < m_Players.Length; i++)
+            for (int i = 0; i < m_PlayersArray.Length; i++)
             {
-                m_Players[i].transform.position = m_PlayerOriginTransform[i];
-                m_Players[i].transform.rotation = m_PlayerOriginRotation[i];
-                //int health = m_gPlayers[i].GetComponent<PlayerManager>().m_iHealth;
+                m_PlayersArray[i].transform.position = m_PlayerOriginTransform[i];
+                m_PlayersArray[i].transform.rotation = m_PlayerOriginRotation[i];
+                //int health = m_Players[i].GetComponent<PlayerManager>().m_iHealth;
                 //health = m_iPlayerHealth;
             }
             //bool playerwon = GetComponent<PlayerManager>().PlayerWon;
@@ -113,4 +122,17 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+    private IEnumerator CountDownTimer(float time = 3)
+    {
+        while(time > 0)
+        {
+            time -= Time.deltaTime;
+            Debug.Log(time);
+
+            if (time < 1)
+                yield return true;
+        }
+    }
+
 }

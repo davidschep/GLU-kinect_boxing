@@ -18,7 +18,12 @@ public class PlayerManager : MonoBehaviour
 
     private void Start()
     {
-        m_iPlayerHealth = GetComponent<GameManager>().Playerhealth;
+        RoundStart();
+    }
+
+    private void RoundStart()
+    {
+        m_iPlayerHealth = GameManager.Playerhealth;
         m_bPlayerDown = false;
     }
 
