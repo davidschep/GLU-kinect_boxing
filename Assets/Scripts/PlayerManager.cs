@@ -6,13 +6,17 @@ public class PlayerManager : MonoBehaviour
 
     private GameObject[] m_PlayersArray;
 
-    private bool m_bPlayerDown;
+    private bool[] m_bPlayersDownArray;
 
-    private int m_iPlayerHealth;
+    private int[] m_iPlayersHealthArray;
 
-    public bool PlayerDown
+    public int[] PlayersHealthArray
     {
-        get { return m_bPlayerDown; }
+        get { return m_iPlayersHealthArray; }
+    }
+    public bool[] PlayerDown
+    {
+        get { return m_bPlayersDownArray; }
     }
 
 
@@ -21,15 +25,31 @@ public class PlayerManager : MonoBehaviour
         RoundStart();
     }
 
-    private void RoundStart()
-    {
-        m_iPlayerHealth = GameManager.Playerhealth;
-        m_bPlayerDown = false;
-    }
-
     // Update is called once per frame
     private void Update()
     {
+        CheckIfDown();
+    }
+
+    private void RoundStart()
+    {
+
+        m_iPlayersHealthArray[0] = GameManager.Playerhealth;
+        m_iPlayersHealthArray[1] = GameManager.Playerhealth;
+
+        m_bPlayersDownArray[0] = false;
+        m_bPlayersDownArray[1] = false;
 
     }
+    /// <summary>
+    /// Checks if the players health is 0
+    /// </summary>
+    private void CheckIfDown()
+    {
+        if (m_iPlayersHealthArray[0] < 0)
+            m_bPlayersDownArray[0] = true;
+        else
+            m_bPlayersDownArray[1] = true;
+    }
+
 }

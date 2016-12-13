@@ -84,10 +84,7 @@ public class GameManager : MonoBehaviour
             return true;
         return false;
     }
-    private void CheckIfPlayerDown()
-    {
 
-    }
     /// <summary>
     /// Checks the bool if its true and then executes the function
     /// </summary>
@@ -100,25 +97,25 @@ public class GameManager : MonoBehaviour
             {
                 m_PlayersArray[i].transform.position = m_PlayerOriginTransform[i];
                 m_PlayersArray[i].transform.rotation = m_PlayerOriginRotation[i];
-                //int health = m_Players[i].GetComponent<PlayerManager>().m_iHealth;
-                //health = m_iPlayerHealth;
+
             }
-            //bool playerwon = GetComponent<PlayerManager>().PlayerWon;
-            //RoundCounter(playerwon);
+
+            bool[] playerdown = GetComponent<PlayerManager>().PlayerDown;
+            RoundCounter(playerdown);
 
         }
     }
-    private void RoundCounter(bool playerwon)
+    private void RoundCounter(bool[] playerdown)
     {
-        if (playerwon)
-        {
-            //Player 1 won
-            m_iPlayerWins[0]++;
-        }
-        else
+        if (playerdown[0])
         {
             //Player 2 won
             m_iPlayerWins[1]++;
+        }
+        else
+        {
+            //Player 1 won
+            m_iPlayerWins[0]++;
         }
 
     }
