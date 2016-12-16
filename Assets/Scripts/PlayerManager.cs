@@ -6,9 +6,9 @@ public class PlayerManager : MonoBehaviour
 
     private GameObject[] m_PlayersArray;
 
-    private bool[] m_bPlayersDownArray;
+    private bool[] m_bPlayersDownArray = new bool[2];
 
-    private int[] m_iPlayersHealthArray;
+    private int[] m_iPlayersHealthArray = new int[2];
 
     public int[] PlayersHealthArray
     {
@@ -33,7 +33,6 @@ public class PlayerManager : MonoBehaviour
 
     private void RoundStart()
     {
-
         m_iPlayersHealthArray[0] = GameManager.Playerhealth;
         m_iPlayersHealthArray[1] = GameManager.Playerhealth;
 
@@ -52,4 +51,8 @@ public class PlayerManager : MonoBehaviour
             m_bPlayersDownArray[1] = true;
     }
 
+    public void OnPlayerPunch(Limb limb, GameObject hitObject)
+    {
+        
+    }
 }

@@ -125,7 +125,6 @@ public class GameManager : MonoBehaviour
         while(time > 0)
         {
             time -= Time.deltaTime;
-            Debug.Log(time);
 
             if (time < 1)
                 yield return true;
