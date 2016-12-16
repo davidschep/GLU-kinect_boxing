@@ -7,9 +7,6 @@ public class GameManager : MonoBehaviour
 
     private GameObject[] m_PlayersArray;
 
-    private Vector3[] m_PlayerOriginTransform;
-    private Quaternion[] m_PlayerOriginRotation;
-
     private bool m_bRoundOver;
     private bool m_bRoundStart;
 
@@ -42,10 +39,13 @@ public class GameManager : MonoBehaviour
         InitPlayersWithTag("Player");
 
         m_iPlayerWins = new int[m_PlayersArray.Length];
-        m_iPlayerWins[0] = 0;
-        m_iPlayerWins[1] = 0;
 
-        StartCoroutine(CountDownTimer(10f));
+        for (int i = 0; i < m_PlayersArray.Length; i++)
+        {
+            m_iPlayerWins[i] = 0;
+        }
+
+        StartCoroutine(InitPrep(10f));
 
     }
 
@@ -62,15 +62,6 @@ public class GameManager : MonoBehaviour
     {
         m_PlayersArray = GameObject.FindGameObjectsWithTag(tag);
         Debug.Log("Players found: " + m_PlayersArray.Length);
-
-        m_PlayerOriginRotation = new Quaternion[m_PlayersArray.Length];
-        m_PlayerOriginTransform = new Vector3[m_PlayersArray.Length];
-
-        for (int i = 0; i < m_PlayersArray.Length; i++)
-        {
-            m_PlayerOriginTransform[i] = m_PlayersArray[i].transform.position;
-            m_PlayerOriginRotation[i] = m_PlayersArray[i].transform.rotation;
-        }
 
     }
     /// <summary>
@@ -93,12 +84,6 @@ public class GameManager : MonoBehaviour
     {
         if (roundover)
         {
-            for (int i = 0; i < m_PlayersArray.Length; i++)
-            {
-                m_PlayersArray[i].transform.position = m_PlayerOriginTransform[i];
-                m_PlayersArray[i].transform.rotation = m_PlayerOriginRotation[i];
-
-            }
 
             bool[] playerdown = GetComponent<PlayerManager>().PlayerDown;
             RoundCounter(playerdown);
@@ -120,7 +105,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private IEnumerator CountDownTimer(float time = 3)
+    private IEnumerator InitPrep(float time = 3)
     {
         while(time > 0)
         {
