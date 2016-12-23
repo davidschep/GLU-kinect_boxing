@@ -13,7 +13,12 @@ public class PunchCollider : MonoBehaviour
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag != "Player" + m_PlayerId.ToString())
-            Debug.Log(col.name);
+        {
+            // punch
+            // spawn punch icon here
+            Debug.Log(col.gameObject.tag);
+            GameObject.Find("GameManager").GetComponent<EffectsManager>().InstantiateEffect(transform.position);
+        }
     }
 }
 
