@@ -7,10 +7,12 @@ public class GameManager : MonoBehaviour
 
     private GameObject[] m_PlayersArray;
 
-    private bool m_bRoundOver;
-    private bool m_bRoundStart;
+    [SerializeField]private UiManager m_UiManager;
+
+    private bool m_bRoundStartOver = false;
 
     private float m_fRoundTime;
+    private float m_fCoolDownTimer;
 
     private static int m_iPlayerHealth;
     private int m_iRounds;
@@ -32,7 +34,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         m_iRounds = 1;
-        m_fRoundTime = 60;
+        m_fRoundTime = 5f;
+        m_fCoolDownTimer = 5f;
 
         m_iPlayerHealth = 100;
 
@@ -45,14 +48,44 @@ public class GameManager : MonoBehaviour
             m_iPlayerWins[i] = 0;
         }
 
-        StartCoroutine(InitPrep(10f));
+        PlayerManager.PlayerDowned += IsRoundOver;
+        PlayerManager.PlayerDowned += RestartVariables;
 
+    }
+
+    private void RestartVariables()
+    {
+        m_iRounds = 1;
+        m_fRoundTime = 60f;
+        m_fCoolDownTimer = 5f;
+
+        m_bRoundStartOver = false;
     }
 
     private void Update()
     {
-        bool isroundover = CountdownTimer(m_fRoundTime);
-        IsRoundOver(isroundover);
+
+        if (m_bRoundStartOver)
+        {
+            m_fRoundTime -= Time.deltaTime;
+            m_UiManager.m_RoundUIElements[0].text = Mathf.RoundToInt(m_fRoundTime).ToString();
+            m_UiManager.m_RoundUIElements[1].text = "";
+        }
+        else if(!m_bRoundStartOver)
+        {
+            m_fCoolDownTimer -= Time.deltaTime;
+            m_UiManager.m_RoundUIElements[1].text = Mathf.RoundToInt(m_fCoolDownTimer).ToString();
+            if (m_fCoolDownTimer < 0)
+                m_bRoundStartOver = true;
+        }
+
+
+        if (m_fRoundTime < 0)
+        {
+            IsRoundOver();
+            RestartVariables();
+        }
+        //IsRoundOver(isroundover);
     }
     /// <summary>
     /// Puts all the objects with a certain tag in the m_arPlayers array 
@@ -64,56 +97,39 @@ public class GameManager : MonoBehaviour
         Debug.Log("Players found: " + m_PlayersArray.Length);
 
     }
-    /// <summary>
-    /// Counts down and returns a bool when it reaches 0
-    /// </summary>
-    /// <param name="countdowntime"></param>
-    private bool CountdownTimer(float countdowntime)
-    {
-        countdowntime -= Time.deltaTime;
-        if (countdowntime < 0)
-            return true;
-        return false;
-    }
 
     /// <summary>
     /// Checks the bool if its true and then executes the function
     /// </summary>
     /// <param name="roundover"></param>
-    private void IsRoundOver(bool roundover)
+    private void IsRoundOver()
     {
-        if (roundover)
-        {
 
             bool[] playerdown = GetComponent<PlayerManager>().PlayerDown;
             RoundCounter(playerdown);
 
-        }
     }
     private void RoundCounter(bool[] playerdown)
     {
         if (playerdown[0])
         {
+
             //Player 2 won
             m_iPlayerWins[1]++;
+            Debug.Log("Player wins: " + m_iPlayerWins[1]);
+            m_UiManager.m_RoundUIElements[3].text = "Wins: " + m_iPlayerWins[0].ToString();
+        }
+        else if(playerdown[1])
+        {
+            //Player 1 won
+            m_iPlayerWins[0] += 1;
+            Debug.Log("Player wins: " + m_iPlayerWins[0]);
+            m_UiManager.m_RoundUIElements[2].text = "Wins: " + m_iPlayerWins[0].ToString();
         }
         else
         {
-            //Player 1 won
-            m_iPlayerWins[0]++;
+            m_UiManager.m_RoundUIElements[2].text = "Draw!";
         }
 
     }
-
-    private IEnumerator InitPrep(float time = 3)
-    {
-        while(time > 0)
-        {
-            time -= Time.deltaTime;
-
-            if (time < 1)
-                yield return true;
-        }
-    }
-
 }
