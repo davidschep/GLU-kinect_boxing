@@ -70,6 +70,10 @@ public class GameManager : MonoBehaviour
             m_fRoundTime -= Time.deltaTime;
             m_UiManager.m_RoundUIElements[0].text = Mathf.RoundToInt(m_fRoundTime).ToString();
             m_UiManager.m_RoundUIElements[1].text = "";
+            m_UiManager.m_RoundUIElements[2].text = "Wins: " + m_iPlayerWins[0].ToString();
+
+            //Zet hem aan zodra player 2 er is
+            //m_UiManager.m_RoundUIElements[3].text = "Wins: " + m_iPlayerWins[1].ToString();
         }
         else if(!m_bRoundStartOver)
         {
@@ -129,6 +133,7 @@ public class GameManager : MonoBehaviour
         else
         {
             m_UiManager.m_RoundUIElements[2].text = "Draw!";
+            m_UiManager.m_RoundUIElements[3].text = "Draw!";
         }
 
     }
