@@ -111,7 +111,6 @@ public class BodySourceView : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Checking");
             foreach (KeyValuePair<ulong, GameObject> entry in _Bodies)
                 Debug.Log(entry.Value.name);
         }

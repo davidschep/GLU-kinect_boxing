@@ -2,8 +2,13 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class UiManager : MonoBehaviour {
-    public Text[] m_RoundUIElements;
-    public Slider[] m_HealthElements;
- 
+namespace BoxDetox
+{
+    public class UiManager : MonoBehaviour
+    {
+        public Text[] m_PlayerWins;
+        public Text m_TopCentre;
+        public Text m_Centre;
+        public Image[] m_PlayerHealthBars;
+    }
 }

@@ -1,28 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PunchCollider : MonoBehaviour
+namespace BoxDetox
 {
-    [SerializeField]
-    private Limb m_Limb = Limb.LeftHand;
-    [SerializeField]
-    private PlayerManager m_PlayerManager;
-    [SerializeField]
-    private int m_PlayerId = 1;
-
-    void OnTriggerEnter(Collider col)
+    public class PunchCollider : MonoBehaviour
     {
-        if (col.gameObject.tag != "Player" + m_PlayerId.ToString())
+        [SerializeField]
+        private Limb m_Limb = Limb.LeftHand;
+        [SerializeField]
+        private PlayerManager m_PlayerManager;
+        [SerializeField]
+        private int m_PlayerId = 1;
+
+        void OnTriggerEnter(Collider col)
         {
-            // punch
-            // spawn punch icon here
-            Debug.Log(col.gameObject.tag);
-            GameObject.Find("GameManager").GetComponent<EffectsManager>().InstantiateEffect(transform.position);
+            if (col.gameObject.tag != "Player" + m_PlayerId.ToString() && col.gameObject.tag != "Untagged")
+            {
+                PlayerManager playerManager = GameObject.Find("GameManager").GetComponent<PlayerManager>();
+                playerManager.GetComponent<EffectsManager>().InstantiateEffect(transform.position);
+                if (playerManager.GetComponent<GameManager>().m_TimerState == TimerState.Playing)
+                    if (m_PlayerId == 1)
+                        playerManager.PlayersHealthArray[1]--;
+                    else
+                        playerManager.PlayersHealthArray[0]--;
+            }
         }
     }
 }
 
-public enum Limb
+namespace BoxDetox
 {
-    LeftHand, RightHand, LeftFoot, RightFoot
-};
+    public enum Limb
+    {
+        LeftHand, RightHand, LeftFoot, RightFoot
+    };
+}
