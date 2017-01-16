@@ -51,8 +51,10 @@ namespace BoxDetox
                 Windows.Kinect.Body body = GameObject.Find("BodyManager").GetComponent<BodySourceManager>().GetData()[myId];
 
                 if (myId != -1)
+                {
                     foreach (KeyValuePair<Windows.Kinect.JointType, Windows.Kinect.Joint> j in body.Joints)
                     {
+                        Vector3 valuePosition = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition;
                         switch (j.Key)
                         {
                             case Windows.Kinect.JointType.SpineBase:
@@ -65,49 +67,61 @@ namespace BoxDetox
                                 m_Hips.position += offsetPosition; // (22, 2, 0)
                                 break;
                             case Windows.Kinect.JointType.SpineMid:
-                                m_Spine.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + new Vector3(0, -2, 0) + offsetPosition; break;
+                                m_Spine.position = valuePosition + new Vector3(0, -2, 0); break;
                             case Windows.Kinect.JointType.Neck:
-                                m_Neck.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + new Vector3(0, -1, 0) + offsetPosition; break;
+                                m_Neck.position = valuePosition + new Vector3(0, -1, 0); break;
                             case Windows.Kinect.JointType.Head:
-                                m_Head.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + new Vector3(0, -1, 0) + offsetPosition; break;
+                                m_Head.position = valuePosition + new Vector3(0, -1, 0); break;
 
                             case Windows.Kinect.JointType.ShoulderLeft:
-                                m_RightShoulder.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_RightShoulder.position = valuePosition; break;
                             case Windows.Kinect.JointType.ElbowLeft:
-                                m_RightForeArm.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_RightForeArm.position = valuePosition; break;
                             case Windows.Kinect.JointType.WristLeft:
-                                m_RightHand.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_RightHand.position = valuePosition; break;
                             case Windows.Kinect.JointType.ShoulderRight:
-                                m_LeftShoulder.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_LeftShoulder.position = valuePosition; break;
                             case Windows.Kinect.JointType.ElbowRight:
-                                m_LeftForeArm.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier  + offsetPosition; break;
+                                m_LeftForeArm.position = valuePosition; break;
                             case Windows.Kinect.JointType.WristRight:
-                                m_LeftHand.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_LeftHand.position = valuePosition; break;
 
                             // Switching left & right around cuz this works
                             case Windows.Kinect.JointType.HipLeft:
-                                m_RightUpLeg.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_RightUpLeg.position = valuePosition; break;
                             case Windows.Kinect.JointType.KneeLeft:
-                                m_RightLeg.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_RightLeg.position = valuePosition; break;
                             case Windows.Kinect.JointType.AnkleLeft:
-                                m_RightFoot.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_RightFoot.position = valuePosition; break;
                             case Windows.Kinect.JointType.HipRight:
-                                m_LeftUpLeg.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_LeftUpLeg.position = valuePosition; break;
                             case Windows.Kinect.JointType.KneeRight:
-                                m_LeftLeg.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_LeftLeg.position = valuePosition; break;
                             case Windows.Kinect.JointType.AnkleRight:
-                                m_LeftFoot.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier + offsetPosition; break;
+                                m_LeftFoot.position = valuePosition; break;
+
+                            case Windows.Kinect.JointType.HandTipLeft:
+                                Vector3 lookPosRight = (valuePosition - m_RightHand.position).normalized;
+                                m_RightHand.rotation = Quaternion.LookRotation(lookPosRight);
+                                m_RightHand.eulerAngles += new Vector3(90, 0, 0); break;
+                            case Windows.Kinect.JointType.HandTipRight:
+                                Vector3 lookPosLeft = (valuePosition - m_LeftHand.position).normalized;
+                                m_LeftHand.rotation = Quaternion.LookRotation(lookPosLeft);
+                                m_LeftHand.eulerAngles += new Vector3(90, 0, 0); break;
                         }
                     }
+                    m_RightForeArm.position = (m_RightHand.position + m_RightForeArm.position) / 2;
+                    m_LeftForeArm.position = (m_LeftHand.position + m_LeftForeArm.position) / 2;
+                }
 
 
 
                 m_LeftShoulder.LookAt(m_LeftForeArm);
-                m_LeftShoulder.eulerAngles += new Vector3(70, 0);
+                m_LeftShoulder.eulerAngles += new Vector3(100, 0);
                 m_LeftForeArm.LookAt(m_LeftHand);
                 m_LeftForeArm.eulerAngles += new Vector3(70, 0);
                 m_RightShoulder.LookAt(m_RightForeArm);
-                m_RightShoulder.eulerAngles += new Vector3(70, 0);
+                m_RightShoulder.eulerAngles += new Vector3(100, 0);
                 m_RightForeArm.LookAt(m_RightHand);
                 m_RightForeArm.eulerAngles += new Vector3(70, 0);
             }
@@ -167,10 +181,12 @@ namespace BoxDetox
         // FootRight
 
         // HandTipLeft
-        // ThumbLeft
+        [SerializeField]
+        private Transform m_ThumbLeft;// ThumbLeft
 
         // HandTipRight
-        // ThumbRight
+        [SerializeField]
+        private Transform m_ThumbRight;// ThumbRight
     }
 }
 
