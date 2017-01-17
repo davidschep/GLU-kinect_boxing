@@ -26,10 +26,10 @@ namespace BoxDetox
         {
             CheckIfDown();
             m_UiManager.m_PlayerHealthBars[0].fillAmount = (float)m_iPlayersHealthArray[0] / 100f;
-            m_UiManager.m_PlayerHealthBars[1].fillAmount = (float)m_iPlayersHealthArray[0] / 100f;
+            m_UiManager.m_PlayerHealthBars[1].fillAmount = (float)m_iPlayersHealthArray[1] / 100f;
         }
 
-        private void RoundVariablesSet()
+        public void RoundVariablesSet()
         {
             m_iPlayersHealthArray[0] = GameManager.Playerhealth;
             m_iPlayersHealthArray[1] = GameManager.Playerhealth;
@@ -42,12 +42,12 @@ namespace BoxDetox
         {
             if (m_iPlayersHealthArray[0] < 0)
             {
-                GetComponent<GameManager>().GameWon(0);
+                GetComponent<GameManager>().GameWon(1);
                 RoundVariablesSet();
             }
             else if (m_iPlayersHealthArray[1] < 0)
             {
-                GetComponent<GameManager>().GameWon(1);
+                GetComponent<GameManager>().GameWon(0);
                 RoundVariablesSet();
             }
         }

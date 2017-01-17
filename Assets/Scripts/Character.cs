@@ -10,8 +10,8 @@ namespace BoxDetox
 
         private int m_PlayerId;
 
-        private Vector3 m_MyPosition = new Vector3(0, 0, 0);
-        private const float m_BaseXPos = -20f;
+        private Vector3 m_MyPosition = new Vector3(-20, 0, 0);
+        private const float m_BaseXPos = 0f;
 
         private BodySourceManager m_BodySourceManager;
 
@@ -19,13 +19,15 @@ namespace BoxDetox
         {
             m_PlayerId = int.Parse(gameObject.name[6].ToString()) - 1;
             m_BodySourceManager = GameObject.Find("BodyManager").GetComponent<BodySourceManager>();
-            if (m_PlayerId == 1)
-                m_MyPosition -= new Vector3(15, 0);
+            if (m_PlayerId == 0)
+                m_MyPosition += new Vector3(25, 0);
+            else
+                m_MyPosition += new Vector3(-10, 0);
         }
 
         void Update()
         {
-            if (m_PlayerId == 1)
+            if (m_PlayerId == 0)
                 m_Hips.eulerAngles = new Vector3(0, -180, 0);
             else
                 m_Hips.eulerAngles = new Vector3(0, -180, 0);
@@ -60,7 +62,7 @@ namespace BoxDetox
                             case Windows.Kinect.JointType.SpineBase:
                                 m_Hips.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier; // (5, 2, 0)
                                 offsetPosition = m_MyPosition - m_Hips.position; // (17, 2, 0)  last position is the distance to the kinect
-                                if (m_PlayerId == 1)
+                                if (m_PlayerId == 0)
                                     offsetPosition += new Vector3(-j.Value.Position.Z * m_Amplifier - m_BaseXPos, 0, 0);
                                 else
                                     offsetPosition += new Vector3(-j.Value.Position.Z * -m_Amplifier + m_BaseXPos, 0, 0);
@@ -126,7 +128,7 @@ namespace BoxDetox
                 m_RightForeArm.eulerAngles += new Vector3(70, 0);
             }
             catch { }
-            if (m_PlayerId == 1)
+            if (m_PlayerId == 0)
                 m_Hips.eulerAngles = new Vector3(0, -270, 0);
             else
                 m_Hips.eulerAngles = new Vector3(0, -90, 0);

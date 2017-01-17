@@ -44,7 +44,7 @@ namespace BoxDetox
 
             InitPlayersWithTag("Player");
 
-            m_iPlayerWins = new int[m_PlayersArray.Length];
+            m_iPlayerWins = new int[2];
 
             for (int i = 0; i < m_PlayersArray.Length; i++)
                 m_iPlayerWins[i] = 0;
@@ -75,6 +75,7 @@ namespace BoxDetox
                         m_TotalRounds++;
                         m_UiManager.m_TopCentre.text = "Draw!";
                         m_TimerState = TimerState.Waiting;
+                        GetComponent<PlayerManager>().RoundVariablesSet();
                     }
                     break;
             }
@@ -97,7 +98,7 @@ namespace BoxDetox
             else
             {
                 m_iPlayerWins[1]++;
-                m_UiManager.m_PlayerWins[1].text = "Wins: " + m_iPlayerWins[0].ToString();
+                m_UiManager.m_PlayerWins[1].text = "Wins: " + m_iPlayerWins[1].ToString();
                 m_TimerState = TimerState.Waiting;
                 m_UiManager.m_TopCentre.text = "Player 2 wins!";
             }
