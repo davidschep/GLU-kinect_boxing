@@ -51,7 +51,7 @@ namespace BoxDetox
                 }
             }
         }
-
+        
         void Start()
         {
             m_PlayerManager = GameObject.Find("GameManager").GetComponent<PlayerManager>();

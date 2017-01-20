@@ -18,7 +18,7 @@ PluginImporter:
       settings:
         CPU: x86_64
         DefaultValueInitialized: true
-        OS: AnyOS
+        OS: Windows
     Linux:
       enabled: 0
       settings:
@@ -44,13 +44,21 @@ PluginImporter:
       settings:
         CPU: x86_64
     Win:
-      enabled: 1
+      enabled: 0
       settings:
-        CPU: AnyCPU
+        CPU: None
     Win64:
-      enabled: 1
+      enabled: 0
+      settings:
+        CPU: None
+    WindowsStoreApps:
+      enabled: 0
       settings:
         CPU: AnyCPU
+        DontProcess: False
+        PlaceholderPath: 
+        SDK: AnySDK
+        ScriptingBackend: AnyScriptingBackend
   userData: 
   assetBundleName: 
   assetBundleVariant: 
