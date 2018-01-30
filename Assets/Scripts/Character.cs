@@ -15,9 +15,18 @@ namespace BoxDetox
 
         private BodySourceManager m_BodySourceManager;
 
+        private GameObject m_OtherPlayerHips;
+        private float m_DistanceToOtherPlayer;
+        public float m_MinDistance = 9f;
+
         void Start()
         {
             m_PlayerId = int.Parse(gameObject.name[6].ToString()) - 1;
+
+            if (m_PlayerId == 1)
+                m_OtherPlayerHips = GameObject.Find("Player1").transform.FindChild("DimplesRig:Hips").gameObject;
+            else
+                m_OtherPlayerHips = GameObject.Find("Player2").transform.FindChild("DimplesRig:Hips").gameObject;
             m_BodySourceManager = GameObject.Find("BodyManager").GetComponent<BodySourceManager>();
             if (m_PlayerId == 0)
                 m_MyPosition += new Vector3(25, 0);
@@ -34,7 +43,6 @@ namespace BoxDetox
             try
             {
                 Vector3 offsetPosition = m_MyPosition;
-
                 int myId = -1;
                 bool first = false;
                 for (int i = 0; i < m_BodySourceManager.GetData().Length; i++)
@@ -51,6 +59,7 @@ namespace BoxDetox
                         }
 
                 Windows.Kinect.Body body = GameObject.Find("BodyManager").GetComponent<BodySourceManager>().GetData()[myId];
+                //Debug.Log(m_PlayerId.ToString() + "-" + distanceToOtherPlayer.ToString());
 
                 if (myId != -1)
                 {
@@ -62,10 +71,25 @@ namespace BoxDetox
                             case Windows.Kinect.JointType.SpineBase:
                                 m_Hips.position = new Vector3(j.Value.Position.X, j.Value.Position.Y, j.Value.Position.Z) * m_Amplifier; // (5, 2, 0)
                                 offsetPosition = m_MyPosition - m_Hips.position; // (17, 2, 0)  last position is the distance to the kinect
-                                if (m_PlayerId == 0)
-                                    offsetPosition += new Vector3(-j.Value.Position.Z * m_Amplifier - m_BaseXPos, 0, 0);
+
+                                if (m_PlayerId == 1)
+                                    m_DistanceToOtherPlayer = m_OtherPlayerHips.transform.parent.GetComponent<Character>().m_DistanceToOtherPlayer;
                                 else
+                                    m_DistanceToOtherPlayer = Vector3.Distance(m_Hips.position += offsetPosition, m_OtherPlayerHips.transform.position);
+                                Debug.Log(m_PlayerId.ToString() + "-pos-" + m_Hips.position);
+                                Debug.Log(m_PlayerId.ToString() + "-otherpos-" + m_OtherPlayerHips.transform.position);
+                                if (m_PlayerId == 0)
+                                {
+                                    offsetPosition += new Vector3(-j.Value.Position.Z * m_Amplifier - m_BaseXPos, 0, 0);
+                                    if (m_DistanceToOtherPlayer < m_MinDistance)
+                                        offsetPosition -= new Vector3((m_MinDistance - m_DistanceToOtherPlayer) / 2, 0);
+                                }
+                                else
+                                {
                                     offsetPosition += new Vector3(-j.Value.Position.Z * -m_Amplifier + m_BaseXPos, 0, 0);
+                                    if (m_DistanceToOtherPlayer < m_MinDistance)
+                                        offsetPosition += new Vector3((m_MinDistance - m_DistanceToOtherPlayer) / 2, 0);
+                                }
                                 m_Hips.position += offsetPosition; // (22, 2, 0)
                                 break;
                             case Windows.Kinect.JointType.SpineMid:
